@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<characters>
+	<chara id="1">
+		<kon>5</kon>
+		<ges>6</ges>
+		<rea>7</rea>
+		<sta>8</sta>
+		<wil>8</wil>
+		<log>8</log>
+		<int>8</int>
+		<cha>8</cha>
+		<edg>8</edg>
+		<ess>8.0</ess>
+		<mag>8</mag>
+		<ini>8+1W6</ini>
+		<inks>8+1W6</inks>
+		<inhs>8+1W6</inhs>
+		<name>Deine Mudder</name>
+	</chara>
+</characters>

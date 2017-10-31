@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><characters>
+	
+<chara id="1">
+<kon>1</kon>
+<ges>2</ges>
+<rea>3</rea>
+<sta>4</sta>
+<wil>5</wil>
+<log>6</log>
+<int>7</int>
+<cha>8</cha>
+<edg>9</edg>
+<ess>10.0</ess>
+<mag>11</mag>
+<ini>12</ini>
+<ina>13</ina>
+<inks>14</inks>
+<inhs>48</inhs>
+<klim>4</klim>
+<glim>8</glim>
+<slim>11</slim>
+<name>Der Zerstörer</name>
+<meta>Ork</meta>
+</chara>
+<chara id="2">
+<kon>5</kon>
+<ges>2</ges>
+<rea>3</rea>
+<sta>4</sta>
+<wil>5</wil>
+<log>6</log>
+<int>7</int>
+<cha>8</cha>
+<edg>9</edg>
+<ess>10.0</ess>
+<mag>11</mag>
+<ini>12</ini>
+<ina>13</ina>
+<inks>14</inks>
+<inhs>48</inhs>
+<klim>4</klim>
+<glim>8</glim>
+<slim>11</slim>
+<name>Der Magier</name>
+<meta>Elf</meta>
+</chara>
+</characters>
