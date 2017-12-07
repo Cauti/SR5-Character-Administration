@@ -1,0 +1,9 @@
+Protokoll: 29.11.2017
+13:31:41	Hunter nimmt am Kampf teil
+13:31:43	Tsar nimmt am Kampf teil
+13:31:45	Geiler Typ nimmt am Kampf teil
+13:31:47	Hunter würfelt mit 7+1W6; Ergebnis ist: 8
+13:31:47	Tsar würfelt mit 4+1W6; Ergebnis ist: 8
+13:31:48	Geiler Typ würfelt mit 8+3W6; Ergebnis ist: 21
+13:32:08	Geiler Typ nutzt Geist befehligen (EH)
+13:32:16	Geiler Typ nutzt Gegenstand benutzen (EH)

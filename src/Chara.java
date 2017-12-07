@@ -1,233 +1,298 @@
+//import java.util.Comparator;
 
-public class Chara {
-  
-  private int KON, GES, REA, STA, WIL, LOG, INT, CHA, EDG, MAG, KLIM, GLIM, SLIM, KZM, GZM, KZMAbs, GZMAbs, PANZ;
-  private double ESS;
-  private String INI, INA, INKS, INHS;
-  private final String name, meta;
+public class Chara{
 
-  public Chara(int kon, int ges, int rea, int sta, int wil, int log, int iNT, int cha, int edge, double ess, int mag, String ini, String ina, String inks, String inhs, int kzm, int gzm, int panz, String name, String meta){
-    KON = kon;
-    GES = ges;
-    REA = rea;
-    STA = sta;
-    WIL = wil;
-    LOG = log;
-    INT = iNT;
-    CHA = cha;
-    EDG = edge;
-    ESS = ess;
-    MAG = mag;
-    INI = ini;
-    INA = ina;
-    INKS = inks;
-    INHS = inhs;
-    // Setzt den aktuellen Wert der Zustandsmonitore
-    setKZM(kzm);
-    setGZM(gzm);
-    setPANZ(panz);
-    // Berechnet den maximalen Wert der Zustandsmonitore
-    if (KON % 2 == 0) setKZMAbs(8 + KON/2);
-    else setKZMAbs(9 + KON/2);
-    if (WIL % 2 == 0) setGZMAbs(8 + WIL/2);
-    else setGZMAbs(9 + WIL/2);
-    KLIM = (int) Math.ceil((2* STA + KON + REA)/3);
-    GLIM = (int) Math.ceil((2* LOG + INT + WIL)/3);
-    SLIM = (int) Math.ceil((2* CHA + WIL + ESS)/3);
-    this.name = name;
-    this.meta = meta;
-  }
+	private int KON, GES, REA, STA, WIL, LOG, INT, CHA, EDG, MAG, KLIM, GLIM,
+			SLIM, KZM, GZM, KZMAbs, GZMAbs, PANZ;
+	private double ESS;
+	private String INI, INA, INKS, INHS;
+	private final String name;
+	private String meta;
 
-  public int getKON() {
-    return KON;
-  }
+	public Chara(int kon, int ges, int rea, int sta, int wil, int log, int iNT,
+			int cha, int edge, double ess, int mag, String ini, String ina,
+			String inks, String inhs, int kzm, int gzm, int panz, String name,
+			String meta) {
+		KON = kon;
+		GES = ges;
+		REA = rea;
+		STA = sta;
+		WIL = wil;
+		LOG = log;
+		INT = iNT;
+		CHA = cha;
+		EDG = edge;
+		ESS = ess;
+		MAG = mag;
+		INI = ini;
+		INA = ina;
+		INKS = inks;
+		INHS = inhs;
+		// Setzt den aktuellen Wert der Zustandsmonitore
+		setKZM(kzm);
+		setGZM(gzm);
+		setPANZ(panz);
+		// Berechnet den maximalen Wert der Zustandsmonitore
+		if (KON % 2 == 0)
+			setKZMAbs(8 + KON / 2);
+		else
+			setKZMAbs(9 + KON / 2);
+		if (WIL % 2 == 0)
+			setGZMAbs(8 + WIL / 2);
+		else
+			setGZMAbs(9 + WIL / 2);
+		KLIM = (int) Math.ceil((2 * STA + KON + REA) / 3.0);
+		GLIM = (int) Math.ceil((2 * LOG + INT + WIL) / 3.0);
+		SLIM = (int) Math.ceil((2 * CHA + WIL + ESS) / 3.0);
+		this.name = name;
+		this.meta = meta;
+	}
 
-  public void setKON(int kON) {
-    KON = kON;
-  }
+	public void updateValues(int kon, int ges, int rea, int sta, int wil,
+			int log, int iNT, int cha, int edge, double ess, int mag,
+			String ini, String ina, String inks, String inhs, int kzm, int gzm,
+			int panz, String meta) {
+		KON = kon;
+		GES = ges;
+		REA = rea;
+		STA = sta;
+		WIL = wil;
+		LOG = log;
+		INT = iNT;
+		CHA = cha;
+		EDG = edge;
+		ESS = ess;
+		MAG = mag;
+		INI = ini;
+		INA = ina;
+		INKS = inks;
+		INHS = inhs;
+		// Setzt den aktuellen Wert der Zustandsmonitore
+		setKZM(kzm);
+		setGZM(gzm);
+		setPANZ(panz);
+		// Berechnet den maximalen Wert der Zustandsmonitore
+		if (KON % 2 == 0)
+			setKZMAbs(8 + KON / 2);
+		else
+			setKZMAbs(9 + KON / 2);
+		if (WIL % 2 == 0)
+			setGZMAbs(8 + WIL / 2);
+		else
+			setGZMAbs(9 + WIL / 2);
+		KLIM = (int) Math.ceil((2 * STA + KON + REA) / 3);
+		GLIM = (int) Math.ceil((2 * LOG + INT + WIL) / 3);
+		SLIM = (int) Math.ceil((2 * CHA + WIL + ESS) / 3);
+		// this.name = name;
+		this.meta = meta;
+	}
+	
+	@Override
+	public String toString() {
+		return "Chara [KON=" + KON + ", GES=" + GES + ", REA=" + REA + ", STA="
+				+ STA + ", WIL=" + WIL + ", LOG=" + LOG + ", INT=" + INT
+				+ ", CHA=" + CHA + ", EDG=" + EDG + ", MAG=" + MAG + ", KLIM="
+				+ KLIM + ", GLIM=" + GLIM + ", SLIM=" + SLIM + ", KZM=" + KZM
+				+ ", GZM=" + GZM + ", KZMAbs=" + KZMAbs + ", GZMAbs=" + GZMAbs
+				+ ", PANZ=" + PANZ + ", ESS=" + ESS + ", INI=" + INI + ", INA="
+				+ INA + ", INKS=" + INKS + ", INHS=" + INHS + ", name=" + name
+				+ ", meta=" + meta + "]";
+	}
 
-  public int getGES() {
-    return GES;
-  }
+	public int getKON() {
+		return KON;
+	}
 
-  public void setGES(int gES) {
-    GES = gES;
-  }
+	public void setKON(int kON) {
+		KON = kON;
+	}
 
-  public int getREA() {
-    return REA;
-  }
+	public int getGES() {
+		return GES;
+	}
 
-  public void setREA(int rEA) {
-    REA = rEA;
-  }
+	public void setGES(int gES) {
+		GES = gES;
+	}
 
-  public int getSTA() {
-    return STA;
-  }
+	public int getREA() {
+		return REA;
+	}
 
-  public void setSTA(int sTA) {
-    STA = sTA;
-  }
+	public void setREA(int rEA) {
+		REA = rEA;
+	}
 
-  public int getWIL() {
-    return WIL;
-  }
+	public int getSTA() {
+		return STA;
+	}
 
-  public void setWIL(int wIL) {
-    WIL = wIL;
-  }
+	public void setSTA(int sTA) {
+		STA = sTA;
+	}
 
-  public int getLOG() {
-    return LOG;
-  }
+	public int getWIL() {
+		return WIL;
+	}
 
-  public void setLOG(int lOG) {
-    LOG = lOG;
-  }
+	public void setWIL(int wIL) {
+		WIL = wIL;
+	}
 
-  public int getINT() {
-    return INT;
-  }
+	public int getLOG() {
+		return LOG;
+	}
 
-  public void setINT(int iNT) {
-    INT = iNT;
-  }
+	public void setLOG(int lOG) {
+		LOG = lOG;
+	}
 
-  public int getCHA() {
-    return CHA;
-  }
+	public int getINT() {
+		return INT;
+	}
 
-  public void setCHA(int cHA) {
-    CHA = cHA;
-  }
+	public void setINT(int iNT) {
+		INT = iNT;
+	}
 
-  public int getEDG() {
-    return EDG;
-  }
+	public int getCHA() {
+		return CHA;
+	}
 
-  public void setEDG(int eDG) {
-    EDG = eDG;
-  }
+	public void setCHA(int cHA) {
+		CHA = cHA;
+	}
 
-  public int getMAG() {
-    return MAG;
-  }
+	public int getEDG() {
+		return EDG;
+	}
 
-  public void setMAG(int mAG) {
-    MAG = mAG;
-  }
+	public void setEDG(int eDG) {
+		EDG = eDG;
+	}
 
-  public int getKLIM() {
-    return KLIM;
-  }
+	public int getMAG() {
+		return MAG;
+	}
 
-  public void setKLIM(int kLIM) {
-    KLIM = kLIM;
-  }
+	public void setMAG(int mAG) {
+		MAG = mAG;
+	}
 
-  public int getGLIM() {
-    return GLIM;
-  }
+	public int getKLIM() {
+		return KLIM;
+	}
 
-  public void setGLIM(int gLIM) {
-    GLIM = gLIM;
-  }
+	public void setKLIM(int kLIM) {
+		KLIM = kLIM;
+	}
 
-  public int getSLIM() {
-    return SLIM;
-  }
+	public int getGLIM() {
+		return GLIM;
+	}
 
-  public void setSLIM(int sLIM) {
-    SLIM = sLIM;
-  }
+	public void setGLIM(int gLIM) {
+		GLIM = gLIM;
+	}
 
-  public double getESS() {
-    return ESS;
-  }
+	public int getSLIM() {
+		return SLIM;
+	}
 
-  public void setESS(double eSS) {
-    ESS = eSS;
-  }
+	public void setSLIM(int sLIM) {
+		SLIM = sLIM;
+	}
 
-  public String getINI() {
-    return INI;
-  }
+	public double getESS() {
+		return ESS;
+	}
 
-  public void setINI(String iNI) {
-    INI = iNI;
-  }
+	public void setESS(double eSS) {
+		ESS = eSS;
+	}
 
-  public String getINA() {
-    return INA;
-  }
+	public String getINI() {
+		return INI;
+	}
 
-  public void setINA(String iNA) {
-    INA = iNA;
-  }
+	public void setINI(String iNI) {
+		INI = iNI;
+	}
 
-  public String getINKS() {
-    return INKS;
-  }
+	public String getINA() {
+		return INA;
+	}
 
-  public void setINKS(String iNKS) {
-    INKS = iNKS;
-  }
+	public void setINA(String iNA) {
+		INA = iNA;
+	}
 
-  public String getINHS() {
-    return INHS;
-  }
+	public String getINKS() {
+		return INKS;
+	}
 
-  public void setINHS(String iNHS) {
-    INHS = iNHS;
-  }
+	public void setINKS(String iNKS) {
+		INKS = iNKS;
+	}
 
-  public String getName() {
-    return name;
-  }
+	public String getINHS() {
+		return INHS;
+	}
 
-  public String getMeta() {
-    return meta;
-  }
+	public void setINHS(String iNHS) {
+		INHS = iNHS;
+	}
 
-  public int getKZM() {
-	return KZM;
-  }
+	public String getName() {
+		return name;
+	}
 
-  public void setKZM(int kZM) {
-	KZM = kZM;
-  }
+	public String getMeta() {
+		return meta;
+	}
 
-  public int getGZM() {
-	return GZM;
-  }
+	public int getKZM() {
+		return KZM;
+	}
 
-  public void setGZM(int gZM) {
-	GZM = gZM;
-  }
+	public void setKZM(int kZM) {
+		KZM = kZM;
+	}
 
-public int getKZMAbs() {
-	return KZMAbs;
-}
+	public int getGZM() {
+		return GZM;
+	}
 
-public void setKZMAbs(int kZMAbs) {
-	KZMAbs = kZMAbs;
-}
+	public void setGZM(int gZM) {
+		GZM = gZM;
+	}
 
-public int getGZMAbs() {
-	return GZMAbs;
-}
+	public int getKZMAbs() {
+		return KZMAbs;
+	}
 
-public void setGZMAbs(int gZMAbs) {
-	GZMAbs = gZMAbs;
-}
+	public void setKZMAbs(int kZMAbs) {
+		KZMAbs = kZMAbs;
+	}
 
-public int getPANZ() {
-	return PANZ;
-}
+	public int getGZMAbs() {
+		return GZMAbs;
+	}
 
-public void setPANZ(int pANZ) {
-	PANZ = pANZ;
-}
-   
+	public void setGZMAbs(int gZMAbs) {
+		GZMAbs = gZMAbs;
+	}
+
+	public int getPANZ() {
+		return PANZ;
+	}
+
+	public void setPANZ(int pANZ) {
+		PANZ = pANZ;
+	}
+
+//	public int compare(Chara c1, Chara c2) {
+//		return c1.getName().compareTo(c2.getName());
+//	}
+
 }
