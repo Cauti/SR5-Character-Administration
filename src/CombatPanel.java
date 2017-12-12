@@ -1,11 +1,18 @@
+import java.awt.Component;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Insets;
+import java.awt.List;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -47,8 +54,8 @@ public class CombatPanel {
 	private static JLabel jLabelGZMbat2 = new JLabel();
 	private static JLabel jLabelKZMbatAnz2 = new JLabel();
 	private static JLabel jLabelGZMbatAnz2 = new JLabel();
-	private static JLabel jLabelKZMbatMali2 = new JLabel();
-	private static JLabel jLabelGZMbatMali2 = new JLabel();
+	private static JLabel jLabelKZMbatMali2 = new JLabel(), jLabelAKR = new JLabel(), jLabelKOR = new JLabel();
+	private static JLabel jLabelGZMbatMali2 = new JLabel(), jLabelWILVert = new JLabel();
 	private static JLabel jLabelErgebnisAngr = new JLabel(),
 			jLabelErgebnisVert = new JLabel(), jLabelReaVert = new JLabel(),
 			jLabelIntVert = new JLabel();
@@ -75,12 +82,12 @@ public class CombatPanel {
 			jLabelAnzSchadenWid = new JLabel(),
 			wuerfelSchadenWid = new JLabel();
 	private static JLabel jLabelSCodenachWuerfeln = new JLabel();
-	private static JLabel eintragSCodenachWuerfeln = new JLabel();
+	private static JLabel eintragSCodenachWuerfeln = new JLabel(), plus5 = new JLabel(), plus6 = new JLabel(), bracketLeft2 = new JLabel(), bracketRight2 = new JLabel();
 	private static JTextField eintragErgAngr = new JTextField(),
 			eintragErgVert = new JTextField(),
 			schadenscodeAngr = new JTextField(),
 			eintragErgSchadenWid = new JTextField();
-	private static JTextField jTextFieldINA = new JTextField();
+	private static JTextField jTextFieldINA = new JTextField(), jTextFieldAKR = new JTextField(), jTextFieldKOR = new JTextField(), jTextFieldWLK = new JTextField(), jTextFieldNKF = new JTextField(), jTextFieldPRA = new JTextField();
 	private static JTextField jTextFieldINKS = new JTextField();
 	private static JTextField jTextFieldINHS = new JTextField();
 	private static JTextField jTextFieldKZM = new JTextField();
@@ -104,7 +111,7 @@ public class CombatPanel {
     private static DefaultTableModel modelKZM, modelGZM, modelKZM2, modelGZM2;
     private static JTextArea jTextAreaProtokoll = new JTextArea();
     private static JScrollPane scrollProto = new JScrollPane();
-    private static String[] uhandlungen = {"Normal", "Ausweichen", "Blocken", "Parieren", "Volle Abwehr", "Volle Deckung"};
+    private static String[] uhandlungen = {"Normal", "Ausweichen", "Blocken", "Parieren", "Volle Abwehr"};
 
 	public static void setUpCombatPanel(JPanel cPanel) {
 		battlePanel = cPanel;
@@ -119,7 +126,7 @@ public class CombatPanel {
 		});
 		
 		frameWidth = IAmTheFrame.getFrameWidth();
-		double perw = frameWidth*0.01;
+		final double perw = frameWidth*0.01;
 		arrayWidth = (2*frameWidth)/36-10;
 		frameHeight = IAmTheFrame.getFrameHeight();
 		double perh = frameHeight*0.01;
@@ -145,13 +152,93 @@ public class CombatPanel {
 		x = (int) (74*perw);
 		jComboBoxUHandlungen = new JComboBox<String>(uhandlungen);
 		jComboBoxUHandlungen.setBounds(x, y, w, compHeight);
-		jComboBoxUHandlungen.addFocusListener(new java.awt.event.FocusAdapter() {
-//			public void focusGained(java.awt.event.FocusEvent evt) {}
-
-			public void focusLost(java.awt.event.FocusEvent evt) {
-				// Labels anpassen!
+		jComboBoxUHandlungen.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent ie) {
+				int uhandlung = jComboBoxUHandlungen.getSelectedIndex();
+				int y = jLabelReaVert.getY();
+				int x = scrollProto.getX();
+				int w = jLabelReaVert.getWidth();
+				jTextFieldAKR.setBounds(x, y, w, compHeight);
+				jTextFieldAKR.setText("Akrobatik");
+				jTextFieldAKR.setHorizontalAlignment(SwingConstants.CENTER);
 				
-				// ---------------------------------------------------------->
+				jTextFieldWLK.setBounds(x, y, w, compHeight);
+				jTextFieldWLK.setText("Waffenloser Kampf");
+				jTextFieldWLK.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				jTextFieldNKF.setBounds(x, y, w, compHeight);
+				jTextFieldNKF.setText("Nahkampffertigkeit");
+				jTextFieldNKF.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x = (int) (jTextFieldAKR.getX() + jTextFieldAKR.getWidth() + 2*perw);
+				jTextFieldKOR.setBounds(x, y, w, compHeight);
+				jTextFieldKOR.setText("Körperlich");
+				jTextFieldKOR.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				jTextFieldPRA.setBounds(x, y, w, compHeight);
+				jTextFieldPRA.setText("Präzision");
+				jTextFieldPRA.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x = (int) (jTextFieldAKR.getX() - 3*perw);
+				w = (int) (2*perw);
+				plus5.setBounds(x, y, w, compHeight);
+				plus5.setText("+");
+				plus5.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x = (int) (jTextFieldAKR.getX() + jTextFieldAKR.getWidth());
+				bracketLeft2.setBounds(x, y, w, compHeight);
+				bracketLeft2.setText("[");
+				bracketLeft2.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x = (int) (jTextFieldKOR.getX() + jTextFieldKOR.getWidth());
+				bracketRight2.setBounds(x, y, w, compHeight);
+				bracketRight2.setText("]");
+				bracketRight2.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x = (int) (bracketRight2.getX() + bracketRight2.getWidth() + perw);
+				plus6.setBounds(x, y, w, compHeight);
+				plus6.setText("+");
+				plus6.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				x += perw;
+				w = jLabelReaVert.getWidth();
+				jLabelWILVert.setBounds(x, y, w, compHeight);
+				jLabelWILVert.setText("" + IAmTheFrame.searchCharaByName((String) jComboBoxVerteidiger.getSelectedItem()).getWIL());
+				jLabelWILVert.setHorizontalAlignment(SwingConstants.CENTER);
+				
+				HashSet<Component> allCompsUHandlungen = new HashSet<Component>();
+				HashSet<Component> allCompsUHandlungenOhneVA = new HashSet<Component>();
+				HashSet<Component> ausweichen = new HashSet<Component>(Arrays.asList((Component) jTextFieldAKR, jTextFieldKOR, plus5, bracketLeft2, bracketRight2));
+				HashSet<Component> blocken = new HashSet<Component>(Arrays.asList((Component) jTextFieldWLK, jTextFieldKOR, plus5, bracketLeft2, bracketRight2));
+				HashSet<Component> parieren = new HashSet<Component>(Arrays.asList((Component) jTextFieldNKF, jTextFieldPRA, plus5, bracketLeft2, bracketRight2));
+				HashSet<Component> volleabwehr = new HashSet<Component>(Arrays.asList((Component) plus6, jLabelWILVert));
+				allCompsUHandlungen.addAll(ausweichen);
+				allCompsUHandlungen.addAll(blocken);
+				allCompsUHandlungen.addAll(parieren);
+				allCompsUHandlungen.addAll(volleabwehr);
+				allCompsUHandlungenOhneVA.addAll(allCompsUHandlungen);
+				allCompsUHandlungenOhneVA.removeAll(volleabwehr);
+								
+				switch (uhandlung) {
+				case 1: 
+					for (Component c : allCompsUHandlungenOhneVA) battlePanel.remove(c);
+					for (Component c : ausweichen) battlePanel.add(c);
+					battlePanel.repaint(); break; 
+				case 2: 
+					for (Component c : allCompsUHandlungenOhneVA) battlePanel.remove(c);
+					for (Component c : blocken) battlePanel.add(c);
+					battlePanel.repaint(); break;
+				case 3: 
+					for (Component c : allCompsUHandlungenOhneVA) battlePanel.remove(c);
+					for (Component c : parieren) battlePanel.add(c);
+					battlePanel.repaint(); break;
+				case 4: // Volle Abwehr 
+					for (Component c : volleabwehr) battlePanel.add(c);
+					battlePanel.repaint(); break;
+				default: 
+					for (Component c : allCompsUHandlungen) battlePanel.remove(c);
+					battlePanel.repaint();
+				}
 			}
 		});
 		battlePanel.add(jComboBoxUHandlungen);
@@ -174,7 +261,7 @@ public class CombatPanel {
 	    y = (int) (16*perh);
 	    w = (int) (8*perw);
 	    JScrollPane sKZM = new JScrollPane (kZuMon, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    sKZM.setBounds(x, y, w, (int) compHeight);
+	    sKZM.setBounds(x, y, w, (int) compHeight+15);
 	    sKZM.setBorder(new TitledBorder ( new EtchedBorder (), "Körperlicher ZM:" ));
 	    battlePanel.add(sKZM);
 	    
@@ -193,7 +280,7 @@ public class CombatPanel {
 	    gZuMon = new JTable(modelGZM);
 	    x = (int) (20*perw);
 	    JScrollPane sGZM = new JScrollPane (gZuMon, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    sGZM.setBounds(x, y, w, (int) compHeight);
+	    sGZM.setBounds(x, y, w, (int) compHeight+15);
 	    sGZM.setBorder(new TitledBorder ( new EtchedBorder (), "Geistiger ZM:" ));
 	    battlePanel.add(sGZM);
 	    
@@ -437,7 +524,7 @@ public class CombatPanel {
 		});
 		battlePanel.add(update);
 		
-		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+		// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Rechte Minipage
 		
 		int c = (frameWidth/3);
 		x = (int) (8*perw + c);
@@ -472,7 +559,7 @@ public class CombatPanel {
 	    y = (int) sKZM.getY();
 	    w = (int) sKZM.getWidth();
 	    JScrollPane sKZM2 = new JScrollPane (kZuMon2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    sKZM2.setBounds(x, y, w, (int) compHeight);
+	    sKZM2.setBounds(x, y, w, (int) compHeight+15);
 	    sKZM2.setBorder(new TitledBorder ( new EtchedBorder (), "Körperlicher ZM:" ));
 	    battlePanel.add(sKZM2);
 	    
@@ -491,7 +578,7 @@ public class CombatPanel {
 	    gZuMon2 = new JTable(modelGZM2);
 	    x = (int) (20*perw+c);
 	    JScrollPane sGZM2 = new JScrollPane (gZuMon2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-	    sGZM2.setBounds(x, y, w, (int) compHeight);
+	    sGZM2.setBounds(x, y, w, (int) compHeight+15);
 	    sGZM2.setBorder(new TitledBorder ( new EtchedBorder (), "Geistiger ZM:" ));
 	    battlePanel.add(sGZM2);
 	    
@@ -925,10 +1012,9 @@ public class CombatPanel {
 
 			public void focusLost(java.awt.event.FocusEvent evt) {
 				try {
-					jLabelErgebnisVert.setText(""
-							+ (Integer.parseInt(jLabelReaVert.getText())
-									+ Integer.parseInt(jLabelIntVert.getText()) + Integer
-										.parseInt(jTextFieldModiVert.getText())));
+					// Berechnen der Verteidigungswürfel
+					computeAnzVert();
+					//jLabelErgebnisVert.setText("" + (Integer.parseInt(jLabelReaVert.getText()) + Integer.parseInt(jLabelIntVert.getText()) + Integer.parseInt(jTextFieldModiVert.getText())));
 				} catch (Exception e) {
 					System.out.println("Wohl keine Zahl eingegeben?");
 				}
@@ -1021,27 +1107,56 @@ public class CombatPanel {
 
 	// Würfelt zufällig für den Verteidiger die Probe
 	public static void automWuerfeln_ActionPerformed(ActionEvent evt) {
-		int anz = 0;
+		ArrayList<Integer> wuerfe = new ArrayList<Integer>();
+		int wuerfel = 0;
+		int limit = -1;
 		int erfolge = 0;
 		int miss = 0;
+		String s = "";
 		Random ran = new Random();
 		try {
-			anz = Integer.parseInt(jLabelErgebnisVert.getText());
+			// Syntaxanalyse:
+			s = jLabelErgebnisVert.getText();
+			if (s.contains("[")) {
+				wuerfel = Integer.parseInt(s.substring(0,s.indexOf("[")-1));
+				limit = Integer.parseInt(s.substring(s.indexOf("[")+1, s.length()-1));
+			} else {
+				wuerfel = Integer.parseInt(s);
+			}
 		} catch (Exception e) {
-			System.out.println("Fehler2");
+			e.printStackTrace();
+			limit = 0;
 		}
-		for (int i = 0; i < anz; ++i) {
+		for (int i = 0; i < wuerfel; ++i) { // Würfelt
 			int wurf = ran.nextInt(6) + 1;
+			wuerfe.add(wurf);
 			System.out.println(wurf);
 			if (wurf == 5 || wurf == 6) {
 				erfolge++;
 			}
 			if (wurf == 1) miss++;
 		}
+		if (limit >= 0 && erfolge > limit) erfolge = limit;
+
 		erfolgeVert = erfolge;
 		eintragErgVert.setText("" + erfolgeVert);
-		InitiativePanel.writeProto("" + jComboBoxVerteidiger.getSelectedItem() + " würfelt die Verteidigung mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition (" + jTextFieldModiVert.getText() + ")");
-		InitiativePanel.writeProto("" + jComboBoxVerteidiger.getSelectedItem() + " würfelt die Verteidigung mit " + anz + " Würfeln " + erfolgeVert + " Erfolg(e)");
+		int uhandlung = jComboBoxUHandlungen.getSelectedIndex();
+		String text = "";
+		switch (uhandlung) { // Bereitet das Protokoll vor
+		case 0: text = "" + jComboBoxVerteidiger.getSelectedItem() + " verteidigt normal mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition (" + jTextFieldModiVert.getText() + ")"; break;
+		case 1: text = "" + jComboBoxVerteidiger.getSelectedItem() + " weicht aus mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition + " + jTextFieldAKR.getText() + " Akrobatik (" + jTextFieldModiVert.getText() + ") [" + jTextFieldKOR.getText() + "]"; break;
+		case 2: text = "" + jComboBoxVerteidiger.getSelectedItem() + " blockt mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition + " + jTextFieldWLK.getText() + " Waffenloser Kampf (" + jTextFieldModiVert.getText() + ") [" + jTextFieldKOR.getText() + "]"; break;
+		case 3: text = "" + jComboBoxVerteidiger.getSelectedItem() + " pariert mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition + " + jTextFieldNKF.getText() + " Nahkampf (" + jTextFieldModiVert.getText() + ") [" + jTextFieldPRA.getText() + "]"; break;
+		case 4: text = "" + jComboBoxVerteidiger.getSelectedItem() + " wehrt voll ab mit " + jLabelReaVert.getText() + " Reaktion + " + jLabelIntVert.getText() + " Intuition + " 
+				+ jLabelWILVert.getText() + " Willenskraft " 
+				+ (panelContains(jTextFieldAKR) ? jTextFieldAKR.getText() + " Akrobatik " : "")
+				+ (panelContains(jTextFieldWLK) ? jTextFieldWLK.getText() + " Waffenloser Kampf " : "")
+				+ (panelContains(jTextFieldNKF) ? jTextFieldNKF.getText() + " Nahkampf " : "")
+				+ (panelContains(jTextFieldKOR) && isInteger(jTextFieldKOR.getText()) ? " [" + jTextFieldKOR.getText() + "]" : "")
+				+ (panelContains(jTextFieldPRA) && isInteger(jTextFieldPRA.getText()) ? " [" + jTextFieldPRA.getText() + "]" : ""); break;
+		}
+		InitiativePanel.writeProto(text);
+		InitiativePanel.writeProto("" + jComboBoxVerteidiger.getSelectedItem() + " würfelt die Verteidigung mit " + wuerfel + " Würfeln " + erfolgeVert + " Erfolg(e) (" + wuerfe.toString() +")");
 		try {
 			if (Integer.parseInt(eintragErgAngr.getText()) > Integer
 					.parseInt(eintragErgVert.getText())) {
@@ -1060,14 +1175,14 @@ public class CombatPanel {
 		} catch (Exception e) {
 			System.out.println("Fehler!");
 		}
-		if (Math.ceil(anz*1.0f/2) == miss) {
+		if (Math.floor(wuerfel*0.5f) < miss) {
 			if (erfolge == 0) {
-				JOptionPane.showConfirmDialog(battlePanel,"Kritischer Patzer! (etwas sehr unangenehmes passiert)", "Kritischer Patzer", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(battlePanel,"Kritischer Patzer! (etwas sehr unangenehmes passiert)", "Kritischer Patzer", JOptionPane.INFORMATION_MESSAGE);
 			} else {
-				JOptionPane.showConfirmDialog(battlePanel,"Patzer! (etwas unangenehmes passiert)", "Patze", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(battlePanel,"Patzer! (etwas unangenehmes passiert)", "Patze", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-	} // end of jButton2_ActionPerformed
+	} 
 
 	// Würfelt zufällig für den Verteidiger die Schadenswiderstandsprobe
 	public static void automWuerfeln2_ActionPerformed(ActionEvent evt) {
@@ -1097,41 +1212,44 @@ public class CombatPanel {
 
 	} // end of jButton2_ActionPerformed
 	
-	// Würfelt zufällig für den Verteidiger die Schadenswiderstandsprobe
-		public static void angriffWuerfeln_ActionPerformed(ActionEvent evt) {
-			int wuerfel = 0;
-			int limit = 0;
-			int erfolge = 0;
-			String s = "";
-			Random ran = new Random();
-			try {
-				// Syntaxanalyse:
-				s = jLabelErgebnisAngr.getText();
-				wuerfel = Integer.parseInt(s.substring(0,s.indexOf("[")-1));
-				limit = Integer.parseInt(s.substring(s.indexOf("[")+1, s.length()-1));
-			} catch (Exception e) {
-				e.printStackTrace();
+	// Würfelt zufällig für den Angreifer den Angriffswert
+	public static void angriffWuerfeln_ActionPerformed(ActionEvent evt) {
+		ArrayList<Integer> wuerfe = new ArrayList<Integer>();
+		int wuerfel = 0;
+		int limit = 0;
+		int erfolge = 0;
+		int miss = 0;
+		String s = "";
+		Random ran = new Random();
+		try {
+			// Syntaxanalyse:
+			s = jLabelErgebnisAngr.getText();
+			wuerfel = Integer.parseInt(s.substring(0,s.indexOf("[")-1));
+			limit = Integer.parseInt(s.substring(s.indexOf("[")+1, s.length()-1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		for (int i = 0; i < wuerfel; ++i) {
+			int wurf = ran.nextInt(6) + 1;
+			wuerfe.add(wurf);
+			System.out.println(wurf);
+			if (wurf == 5 || wurf == 6) {
+				erfolge++;
 			}
-			for (int i = 0; i < wuerfel; ++i) {
-				int wurf = ran.nextInt(6) + 1;
-				System.out.println(wurf);
-				if (wurf == 5 || wurf == 6) {
-					erfolge++;
-				}
+			if (wurf == 1) miss++;
+		}
+		if (erfolge > limit) erfolge = limit;
+		eintragErgAngr.setText("" + erfolge);
+		InitiativePanel.writeProto("" + jComboBoxAngreifer.getSelectedItem() + " würfelt den Angriff mit Kampffertigkeit " + jTextFieldKampfart.getText() + " + Attributwert " + jTextFieldAttribut.getText() + " (" + jTextFieldModiAngr.getText() + ") [" + jTextFieldLimitAngr.getText() + "]");
+		InitiativePanel.writeProto("" + jComboBoxAngreifer.getSelectedItem() + " würfelt den Angriff mit " + jLabelErgebnisAngr.getText() + " Würfeln " + erfolge + " Erfolg(e) (" + wuerfe.toString() + ")");
+		if (Math.floor(wuerfel*0.5f) < miss) {
+			if (erfolge == 0) {
+				JOptionPane.showMessageDialog(battlePanel,"Kritischer Patzer! (etwas sehr unangenehmes passiert)", "Kritischer Patzer", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(battlePanel,"Patzer! (etwas unangenehmes passiert)", "Patze", JOptionPane.INFORMATION_MESSAGE);
 			}
-			if (erfolge > limit) erfolge = limit;
-			eintragErgAngr.setText("" + erfolge);
-			InitiativePanel.writeProto("" + jComboBoxAngreifer.getSelectedItem() + " würfelt den Angriff mit Kampffertigkeit " + jTextFieldKampfart.getText() + " + Attributwert " + jTextFieldAttribut.getText() + " (" + jTextFieldModiAngr.getText() + ") [" + jTextFieldLimitAngr.getText() + "]");
-			InitiativePanel.writeProto("" + jComboBoxAngreifer.getSelectedItem() + " würfelt den Angriff mit " + jLabelErgebnisAngr.getText() + " Würfeln " + erfolge + " Erfolg(e)");
-			//InitiativePanel.writeProto("" + jComboBoxAngreifer.getSelectedItem() + " würfelt die Schadenwiderstandsprobe mit " + s + " Würfeln " + erfolge + " Erfolge");
-//			try {
-//				eintragSCodenachWuerfeln.setText(""
-//						+ (Integer.parseInt(jLabelModSCode.getText()) - erfolge));
-//			} catch (Exception e) {
-//				System.out.println("Fehler42");
-//			}
-
-		} // end of jButton2_ActionPerformed
+		}
+	} // end of jButton2_ActionPerformed
 
 	public static void schadenAnwenden_ActionPerformed(ActionEvent evt) {
 		try {
@@ -1205,8 +1323,9 @@ public class CombatPanel {
 		// jLabelmodPanzAnz2.setText("");
 		wuerfelSchadenWid.setText("");
 		schadenAnwenden.setEnabled(true);
-	} // end of jButton2_ActionPerformed
+	} 
 
+	// Wird ausgeführt, wenn update-Button gedrückt wird
 	public static void update_ActionPerformed(ActionEvent evt) {
 
 		try {
@@ -1216,12 +1335,7 @@ public class CombatPanel {
 		} catch (Exception e) {
 			System.out.println("Wohl keine Zahl eingegeben?");
 		}
-		try {
-			jLabelErgebnisVert
-					.setText(""
-							+ (Integer.parseInt(jLabelReaVert.getText())
-									+ Integer.parseInt(jLabelIntVert.getText()) + Integer
-										.parseInt(jTextFieldModiVert.getText())));
+		try {computeAnzVert();
 		} catch (Exception e) {
 			System.out.println("Wohl keine Zahl eingegeben?");
 		}
@@ -1248,7 +1362,50 @@ public class CombatPanel {
 		} catch (Exception e) {
 			System.out.println("Fehler42");
 		}
-	} // end of jButton2_ActionPerformed
+	} 
+
+	// Berechnet die Anzahl der Würfel des Verteidigers, abhängig von der Unterbrechungshandlung
+	private static void computeAnzVert() {
+		int reaintmod = Integer.parseInt(jLabelReaVert.getText()) + Integer.parseInt(jLabelIntVert.getText()) + Integer.parseInt(jTextFieldModiVert.getText());
+		int uhandlung = jComboBoxUHandlungen.getSelectedIndex();
+		String limit = "";
+		int summe = 0;
+		switch (uhandlung) {
+		case 0: summe = reaintmod; break;
+		case 1: summe = reaintmod + Integer.parseInt(jTextFieldAKR.getText()); limit = jTextFieldKOR.getText(); break;
+		case 2: summe = reaintmod + Integer.parseInt(jTextFieldWLK.getText()); limit = jTextFieldKOR.getText(); break;
+		case 3: summe = reaintmod + Integer.parseInt(jTextFieldNKF.getText()); limit = jTextFieldPRA.getText(); break;
+		case 4: summe = reaintmod + Integer.parseInt(jLabelWILVert.getText()) + (panelContains(jTextFieldAKR) ? Integer.parseInt(jTextFieldAKR.getText()) : 0)
+				+ (panelContains(jTextFieldWLK) ? Integer.parseInt(jTextFieldWLK.getText()) : 0)
+				+ (panelContains(jTextFieldNKF) ? Integer.parseInt(jTextFieldNKF.getText()) : 0);
+				limit = panelContains(jTextFieldKOR) && isInteger(jTextFieldKOR.getText()) ? jTextFieldKOR.getText() : "";
+				if (limit.equals("")) limit = panelContains(jTextFieldPRA) && isInteger(jTextFieldPRA.getText()) ? jTextFieldPRA.getText() : ""; break;
+		}
+		if (limit.equals("")) jLabelErgebnisVert.setText("" + summe);
+		else jLabelErgebnisVert.setText("" + summe + " [" + limit + "]");
+	}
+	
+	// Checks, wether the Component @c was added to this panel or not
+	private static boolean panelContains(Component c) {
+	    return Arrays.asList(battlePanel.getComponents()).contains(c);
+	}
+	
+	
+	public static boolean isInteger(String s) {
+	    return isInteger(s,10);
+	}
+
+	public static boolean isInteger(String s, int radix) {
+	    if(s.isEmpty()) return false;
+	    for(int i = 0; i < s.length(); i++) {
+	        if(i == 0 && s.charAt(i) == '-') {
+	            if(s.length() == 1) return false;
+	            else continue;
+	        }
+	        if(Character.digit(s.charAt(i),radix) < 0) return false;
+	    }
+	    return true;
+	}
 	
 	// Lässt ein Element zur TeilnehmerBox hinzufügen
 	public static void addComboBoxes(String name){
@@ -1256,6 +1413,7 @@ public class CombatPanel {
 		jComboBoxVerteidiger.addItem(name);
 	}
 	
+	// Setzt den Text für das Protokoll
 	public static void setProto(String text) {
 		jTextAreaProtokoll.setText(text);		
 	}

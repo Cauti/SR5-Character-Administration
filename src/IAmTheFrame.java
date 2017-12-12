@@ -1,13 +1,16 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -41,17 +44,31 @@ public class IAmTheFrame extends JFrame {
 	private JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 	private Timer time;
 	private AutoSaver as;
+	private BufferedImage image;
 	// Ende Attribute
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public IAmTheFrame(String title) {
 		// Frame-Initialisierung
-		// connectFrame = new JDialog();
 		connectFrame = new JFrame();
 		connectFrame.setTitle("CaSCaDE V. 1.0");
-		String iconpath = System.getProperty("user.dir") + "\\res\\logo2.png";
+		//String iconpath = System.getProperty("user.dir") + "\\res\\logo2.png";
+		
+		try {
+			//image = ImageIO.read(ResourceLoader.load("\\logo2.png"));
+			//image = ImageIO.read(getClass().getResource("logo2.png"));
+			image = ImageIO.read(getClass().getResourceAsStream("logo2.png"));
+			connectFrame.setIconImage(image);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
-		ImageIcon img = new ImageIcon(iconpath);
-		connectFrame.setIconImage(img.getImage());
+		//ImageIcon img = new ImageIcon(iconpath);
+		//connectFrame.setIconImage(img.getImage());
+		
 
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
