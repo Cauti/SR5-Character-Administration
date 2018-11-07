@@ -16,12 +16,17 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sr5.classes.Fertigkeit;
+import sr5.classes.Klasse;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 
 // Creats a XMLFile with DOM-Parser
@@ -142,6 +147,15 @@ public class XMLInterface{
 		         Element meta = dom.createElement("meta");
 		         meta.appendChild(dom.createTextNode(tmpChara.getMeta().equals("") ? " " : tmpChara.getMeta()));
 		         chara.appendChild(meta);
+		         
+		         Element klasse = dom.createElement("klasse");
+		         klasse.appendChild(dom.createTextNode("" + tmpChara.getKlasse().getValue()));
+		         chara.appendChild(klasse);
+		         
+		         Element fertigkeiten = dom.createElement("fert");
+		         String f = tmpChara.getFertigkeitenForXML();
+		         fertigkeiten.appendChild(dom.createTextNode(f.equals("") ? " " : f));
+		         chara.appendChild(fertigkeiten);
 	        
 	        }
 	         // write the content into xml file
@@ -224,9 +238,26 @@ public class XMLInterface{
 	            int panz = Integer.parseInt(eElement.getElementsByTagName("panz").item(0).getTextContent());
 	            String name = eElement.getElementsByTagName("name").item(0).getTextContent();
 	            String meta = eElement.getElementsByTagName("meta").item(0).getTextContent();
+	            String fert = eElement.getElementsByTagName("fert").item(0).getTextContent();
+	            
+	            Map<Fertigkeit, Integer> fertigkeiten = new HashMap<Fertigkeit, Integer>();
+	            
+	            // Int speichern, aber als Enum in Chara parsen!
+	            int klasse = 0;
+	            try {
+	            	klasse = Integer.parseInt(eElement.getElementsByTagName("klasse").item(0).getTextContent());
+	            } catch (java.lang.NullPointerException e) {
+	            	e.printStackTrace();
+	            }
 	          
-	            charas[temp] = new Chara(kon, ges, rea, sta, wil, log, intu, cha, edg, ess, mag, ini, ina, inks, inhs, kzm, gzm, panz, name, meta);
-	          }
+	            
+				if (Klasse.getKlassByID(klasse).equals(Klasse.TECHNOMANCER)) {
+					System.out.println(name + " ist ein Techno!");
+					charas[temp] = new Techno(kon,ges,rea,sta,wil,log,intu,cha,edg,ess,mag,ini,ina,inks,inhs,kzm,gzm,panz,name,meta,Klasse.getKlassByID(klasse));
+				} else {
+					charas[temp] = new Chara(kon, ges, rea, sta, wil, log, intu, cha, edg, ess, mag, ini, ina, inks, inhs, kzm, gzm, panz, name, meta, Klasse.getKlassByID(klasse));
+				}
+			  }
 	        }
 	        return charas;
 	      } catch (Exception e) {

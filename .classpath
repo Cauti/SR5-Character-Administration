@@ -6,7 +6,8 @@
 			<attribute name="ignore_optional_problems" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="F:/Dropbox/Workspace/miglayout-3.7.jar"/>
 	<classpathentry kind="lib" path="/Tests/miglayout15-swing.jar" sourcepath="/Tests/miglayout-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

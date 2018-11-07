@@ -1,4 +1,9 @@
-//import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import sr5.classes.*;
 
 public class Chara{
 
@@ -8,11 +13,13 @@ public class Chara{
 	private String INI, INA, INKS, INHS;
 	private final String name;
 	private String meta;
+	private Klasse klasse;
+	private Map<Fertigkeit, Integer> fertigkeiten = new HashMap<Fertigkeit, Integer>();
 
 	public Chara(int kon, int ges, int rea, int sta, int wil, int log, int iNT,
 			int cha, int edge, double ess, int mag, String ini, String ina,
 			String inks, String inhs, int kzm, int gzm, int panz, String name,
-			String meta) {
+			String meta, Klasse klasse) {
 		KON = kon;
 		GES = ges;
 		REA = rea;
@@ -46,12 +53,13 @@ public class Chara{
 		SLIM = (int) Math.ceil((2 * CHA + WIL + ESS) / 3.0);
 		this.name = name;
 		this.meta = meta;
+		this.klasse = klasse;
 	}
 
 	public void updateValues(int kon, int ges, int rea, int sta, int wil,
 			int log, int iNT, int cha, int edge, double ess, int mag,
 			String ini, String ina, String inks, String inhs, int kzm, int gzm,
-			int panz, String meta) {
+			int panz, String meta, Klasse klasse) {
 		KON = kon;
 		GES = ges;
 		REA = rea;
@@ -85,6 +93,7 @@ public class Chara{
 		SLIM = (int) Math.ceil((2 * CHA + WIL + ESS) / 3);
 		// this.name = name;
 		this.meta = meta;
+		this.klasse = klasse;
 	}
 	
 	@Override
@@ -96,7 +105,7 @@ public class Chara{
 				+ ", GZM=" + GZM + ", KZMAbs=" + KZMAbs + ", GZMAbs=" + GZMAbs
 				+ ", PANZ=" + PANZ + ", ESS=" + ESS + ", INI=" + INI + ", INA="
 				+ INA + ", INKS=" + INKS + ", INHS=" + INHS + ", name=" + name
-				+ ", meta=" + meta + "]";
+				+ ", meta=" + meta  + ", klasse=" + klasse + "]";
 	}
 
 	public int getKON() {
@@ -291,8 +300,25 @@ public class Chara{
 		PANZ = pANZ;
 	}
 
-//	public int compare(Chara c1, Chara c2) {
-//		return c1.getName().compareTo(c2.getName());
-//	}
+	public Klasse getKlasse() {
+		return klasse;
+	}
+	
+	public void addFertigkeit(Fertigkeit f, int i) {
+		this.fertigkeiten.put(f, i);
+	}
 
+	public HashMap<Fertigkeit, Integer> getFertigkeiten() {
+		return (HashMap<Fertigkeit, Integer>) fertigkeiten;
+	}
+	
+	// Gibt eine String-Repräsentation von fertigkeiten zurück, um sie in XML zu speichern
+	public String getFertigkeitenForXML() {
+		String ruck = "";
+		Set<Fertigkeit> ferts = fertigkeiten.keySet();
+		for (Fertigkeit f : ferts) {
+			ruck += ((int) f.getValue()) + "," + fertigkeiten.get(f) + ";";
+		}
+		return ruck;
+	}
 }

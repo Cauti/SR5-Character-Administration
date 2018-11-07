@@ -2,9 +2,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
@@ -22,14 +25,13 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableModel;
 
-import net.miginfocom.swing.MigLayout;
 
-
-
-public class InitiativePanel extends JPanel {
+public class InitiativePanel {
 	
 	private static JPanel initPanel;
-	private final static int maxAnz = 12;
+	private static JPanel gridPanel;
+	private final static int maxAnz = 24;
+	private static JPanel[] sPanels = new JPanel[maxAnz];
 	private static final JComponent jButtonKomplexeAktionen = null;
 	private static int frameWidth, frameHeight, gapSpaceV, compHeight, arrayWidth;
 	private static int aktTeilnehmer = 0; // Speichert die Anzahl der bereits hinzugefügten Teilnehmer
@@ -51,7 +53,7 @@ public class InitiativePanel extends JPanel {
 	private static JButton jButtonAddTeilnehmer = new JButton(), jButtonEinfacheHandlung = new JButton(), jButtonKomplexeHandlung = new JButton();
 	private static JButton initiativeNeustart = new JButton(), protokollSpeichern = new JButton(), neuerKampf = new JButton();
 	private static JButton[] wuerfeln = new JButton[maxAnz], freieAnwenden = new JButton[maxAnz], unterbrechungAnwenden = new JButton[maxAnz];
-	private static JTextArea jTextAreaReihenfolge = new JTextArea();
+	//private static JTextArea jTextAreaReihenfolge = new JTextArea();
 	private static JTable jTableReihenfolge = new JTable();
 	private static JTextArea jTextAreaProtokoll = new JTextArea();
 	private static JTextField[] iniWert = new JTextField[maxAnz];
@@ -59,13 +61,23 @@ public class InitiativePanel extends JPanel {
 	private static String[] inis = {"Normal", "Astral", "Mit KS", "Mit HS"};
 	private static String[] einfacheaktionen = {"Aufstehen", "Fokus aktivieren", "Gegenstand aufheben/ablegen", "Gegenstand benutzen", "Geist aktivieren",
 		"Geist befehligen", "Geist entlassen", "Genau beobachten", "Gerätemodus ändern", "In Deckung gehen", "Ladestreifen einschieben", "Ladestreifen herausnehmen",
-		"Pfeil abschießen", "Schnellzaubern", "Schnellziehen", "Waffe abfeuern (EM, HM, SM, AM)", "Waffe bereitmachen", "Wahrnehmung verlagern", "Werfen", "Zielen"};
+		"Pfeil abschießen", "Schnellzaubern", "Schnellziehen", "Waffe abfeuern (EM, HM, SM, AM)", "Waffe bereitmachen", "Wahrnehmung verlagern", "Werfen", "Zielen",
+		"Ausstöpseln", "Icon verändern", "Interfacemodus wechseln", "Marke einladen", "Nachricht übermitteln", "OW-Wert bestimmen", "Sprite aktivieren/deaktivieren",
+		"Sprite befehligen", "Gerät steuern", "Matrixsuche"
+	};
 	private static String[] komplexeaktionen = {"Astrale Projektion", "Fertigkeit einsetzen", "Geist herbeirufen", "Geist verbannen", "In ein geriggtes Fahrzeug springen",
 		"Lange oder halbautom. Salve abfeuern", "Montierte oder Fahrz.waffe abfeuern", "Nahkampfangriff", "Sprinten", "Waffe im AM abfeuern", "Waffe nachladen",
-		"Zauber wirken", "Nichts tun"};
+		"Zauber wirken", "Befehl vortäuschen", "Brute Force", "Datei cracken", "Datei editieren", "Datenbombe entschärfen", "Datenbombe legen", "Eiliges Hacken",
+		"Gerät informieren", "Gerät neu starten", "Gitterwechsel", "Host betreten/verlassen", "Icon aufspühren", "In ein gerät springen", "Komplexe Form abschießen",
+		"Komplexe Form weben", "Marke löschen", "Matrixsignatur löschen", "Matrixwahrnehmung", "Programm abstürzen lassen", "Signal stören",
+		"Sprite dekompilieren", "Sprite kompilieren", "Sprite registrieren", "Übertragung abfangen", "Verstecken", "Gerät steuern", "Matrixsuche", 
+		"Nichts tun"
+	};
 	private static String[] freieHandlungen = {"Gegenstand fallen lassen", "Gestikulieren", "Laufen", "Mehrfachangriff", "Modus ändern", "Satz sprechen/übermitteln", "Sich hinwerfen",
-		"Smartgunladestreifen auswerfen", "Ziel ansagen"};
-	private static String[] unterbrechnungsHandlungen = {"Abfangen", "Ausweichen", "Blocken", "Parieren", "Volle Abwehr", "Volle Deckung"};
+		"Smartgunladestreifen auswerfen", "Ziel ansagen", "Programm laden", "Zwei Matrixattribute tauschen", "Zwei Programme austauschen", "Programm entfernen",
+		"Gerät steuern", "Matrixsuche"
+	};
+	private static String[] unterbrechnungsHandlungen = {"Abfangen", "Ausweichen", "Blocken", "Parieren", "Volle Abwehr", "Volle Deckung", "Volle Matrixabwehr"};
 	private static String[] tableNames = {"Name", "Wert", "Runde"};
 	// Speichert sortiert die Reihenfolge der Charaktere, dabei wird deren Teilnehmernummer (Reihenfolge des Hinzufügens) gespeichert
 	private static ArrayList<Integer> sortedCharas = new ArrayList<Integer>();
@@ -142,14 +154,24 @@ public class InitiativePanel extends JPanel {
 	    //jTextAreaProtokoll.setText("Protokoll: " + getDate());
 	    scrollProto.setBorder(new TitledBorder ( new EtchedBorder (), "Protokoll: " + getDate()));
 	    initPanel.add(scrollProto); 
+	    
+	    
+	    gridPanel = new JPanel();
+	    gridPanel.setLayout(new GridLayout(1,maxAnz, 5, 5));
 	
 	    
 	    // Zweite, dritte, vierte und fünfte Zeile
 	    for (int i = 0; i < teilnehmer.length; ++i){
+	    	//JPanel sPanel = new JPanel();
+	    	sPanels[i] = new JPanel();
+	    	sPanels[i].setLayout(new GridLayout(8,1, 5, 5));
+	    	sPanels[i].setPreferredSize(new Dimension((int)(0.08*frameWidth), compHeight));
 	    	teilnehmer[i] = new JLabel();
-	    	teilnehmer[i].setBounds(20+i*(arrayWidth+10), jLabelTeilnehmer.getY() + jLabelTeilnehmer.getHeight() + gapSpaceV, arrayWidth, compHeight);
+	    	//teilnehmer[i].setBounds(20+i*(arrayWidth+10), jLabelTeilnehmer.getY() + jLabelTeilnehmer.getHeight() + gapSpaceV, arrayWidth, compHeight);
 	    	//teilnehmer[i].setText("dummy");
-	    	initPanel.add(teilnehmer[i]);
+	    	//sPanel.add(teilnehmer[i]);
+	    	teilnehmer[i].setVisible(false);
+	    	sPanels[i].add(teilnehmer[i]);
 	    	
 	    	iniArt[i] = new JComboBox<String>(inis);
 	    	iniArt[i].setBounds(20+i*(arrayWidth+10), teilnehmer[0].getY() + teilnehmer[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
@@ -174,6 +196,8 @@ public class InitiativePanel extends JPanel {
 		    		}
 		    	}
 		    });
+	    	iniArt[i].setVisible(false);
+	    	sPanels[i].add(iniArt[i]);
 	    	
 	    	iniWert[i] = new JTextField();
 	    	iniWert[i].setBounds(20+i*(arrayWidth+10), iniArt[0].getY() + iniArt[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
@@ -198,6 +222,8 @@ public class InitiativePanel extends JPanel {
 					wuerfeln[index].setEnabled(false);
 				}
 			});
+	    	iniWert[i].setVisible(false);
+	    	sPanels[i].add(iniWert[i]);
 	    	    	
 	    	wuerfeln[i] = new JButton();
 	    	wuerfeln[i].setBounds(20+i*(arrayWidth+10), iniWert[0].getY() + iniWert[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
@@ -208,9 +234,13 @@ public class InitiativePanel extends JPanel {
 	    			wuerfeln_ActionPerformed(evt);
 	    		}
 	    	});
+	    	wuerfeln[i].setVisible(false);
+	    	sPanels[i].add(wuerfeln[i]);
 	    	
 	    	freieHandlung[i] = new JComboBox<String>(freieHandlungen);
 	    	freieHandlung[i].setBounds(20+i*(arrayWidth+10), wuerfeln[0].getY() + wuerfeln[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
+	    	freieHandlung[i].setVisible(false);
+	    	sPanels[i].add(freieHandlung[i]);
 	    	
 	    	freieAnwenden[i] = new JButton();
 	    	freieAnwenden[i].setBounds(20+i*(arrayWidth+10), freieHandlung[0].getY() + freieHandlung[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
@@ -222,9 +252,13 @@ public class InitiativePanel extends JPanel {
 	    		}
 	    	});
 	    	freieAnwenden[i].setEnabled(false);
+	    	freieAnwenden[i].setVisible(false);
+	    	sPanels[i].add(freieAnwenden[i]);
 	    	
 	    	unterbrechungsHandlung[i] = new JComboBox<String>(unterbrechnungsHandlungen);
 	    	unterbrechungsHandlung[i].setBounds(20+i*(arrayWidth+10), freieAnwenden[0].getY() + freieAnwenden[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
+	    	unterbrechungsHandlung[i].setVisible(false);
+	    	sPanels[i].add(unterbrechungsHandlung[i]);
 	    	
 	    	unterbrechungAnwenden[i] = new JButton();
 	    	unterbrechungAnwenden[i].setBounds(20+i*(arrayWidth+10), unterbrechungsHandlung[0].getY() + unterbrechungsHandlung[0].getHeight() + gapSpaceV, arrayWidth, compHeight);
@@ -236,53 +270,25 @@ public class InitiativePanel extends JPanel {
 	    		}
 	    	});
 	    	unterbrechungAnwenden[i].setEnabled(false);
+	    	unterbrechungAnwenden[i].setVisible(false);
+	    	sPanels[i].add(unterbrechungAnwenden[i]);
+	    	
+	    	//gridPanel.add(sPanel);
 	    	
 	    } // end of for
 	    
 	    
-//	    sPanel.setLayout(new MigLayout("", "[10%][10%][10%][10%][10%][10%][10%][10%][10%][10%]", "[13.00][][][][][][][][]"));
-//		
-//		for (int i = 0; i < maxAnz; ++i) {
-//			teilnehmer[i] = new JLabel("Name");
-//			sPanel.add(teilnehmer[i], "cell "+i+" 1");
-//		
-//			iniArt[i] = new JComboBox<String>(inis);
-//			sPanel.add(iniArt[i], "cell "+i+" 2, growx");
-//		
-//			iniWert[i] = new JTextField();
-//			sPanel.add(iniWert[i], "cell "+i+" 3");
-//			//textField.setColumns(10);
-//		
-//			wuerfeln[i] = new JButton("Würfeln");
-//			wuerfeln[i].addActionListener(new ActionListener() {
-//				public void actionPerformed(ActionEvent evt) {
-//					wuerfeln_ActionPerformed(evt);
-//				}
-//			});
-//			sPanel.add(wuerfeln[i], "cell "+i+" 4");
-//		
-//			freieHandlung[i] = new JComboBox<String>(freieHandlungen);
-//			sPanel.add(freieHandlung[i], "cell "+i+" 5");
-//		
-//			freieAnwenden[i] = new JButton("FH anwenden");
-//			sPanel.add(freieAnwenden[i], "cell "+i+" 6");
-//		
-//			unterbrechungsHandlung[i] = new JComboBox<String>(unterbrechnungsHandlungen);
-//			sPanel.add(unterbrechungsHandlung[i], "cell "+i+" 7");
-//		
-//			unterbrechungAnwenden[i] = new JButton("UH anwenden");
-//			sPanel.add(unterbrechungAnwenden[i], "cell "+i+" 8");
-//		}
-		
-//		JScrollPane scrollPane = new JScrollPane (sPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-//		scrollPane.setBounds(30, 100, (frameWidth)-300,  frameHeight-300);
-//	    //jTextAreaProtokoll.setText("Protokoll: " + getDate());
-//		scrollPane.setBorder(new TitledBorder ( new EtchedBorder (), "Pain"));
-//	    initPanel.add(scrollPane); 
+	    JScrollPane scrollP = new JScrollPane (gridPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    int y = ComboBoxCharas.getY() + ComboBoxCharas.getHeight() + gapSpaceV;
+	    scrollP.setBounds(20, y, 2*frameWidth/3 - 30, (int) (0.55*frameHeight));
+	    scrollP.setBorder(new TitledBorder ( new EtchedBorder (), "Initiative berechnen"));
+	    initPanel.add(scrollP); 
 	    
 	    
 	 // Ganz untere Zeile:
-	    jLabelText.setBounds(40, unterbrechungAnwenden[0].getY() + unterbrechungAnwenden[0].getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
+	    //int y = unterbrechungAnwenden[0].getY() + unterbrechungAnwenden[0].getHeight() + gapSpaceV;
+	    y = 2*frameHeight/3;
+	    jLabelText.setBounds(40, y, 3*arrayWidth, compHeight);
 	    jLabelText.setText("Dran ist:");
 		initPanel.add(jLabelText);
 		jLabelDranIst.setBounds(40, jLabelText.getY() + jLabelText.getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
@@ -292,14 +298,28 @@ public class InitiativePanel extends JPanel {
 		
 		jComboBoxDranIst.setBounds(40, jLabelText.getY() + jLabelText.getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
 		jComboBoxDranIst.setFont(new Font("Neuropol X Free",Font.BOLD,18));
+//		jComboBoxDranIst.addItemListener(new ItemListener() {
+//			public void itemStateChanged(ItemEvent ie) {
+//				int nr = getTeilnehmerNr((String) jComboBoxDranIst.getSelectedItem());
+//				for (int i = 0; i < aktTeilnehmer; ++i) {
+//					freieAnwenden[i].setEnabled(false);
+//				}
+//				if (nr > -1 && Integer.parseInt(iniWert[nr].getText()) > 0) freieAnwenden[nr].setEnabled(true);
+//			}
+//		});	
 		initPanel.add(jComboBoxDranIst);
+		
 		
 		jLabelHandlungenOffen.setBounds(40, jLabelDranIst.getY() + jLabelDranIst.getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
 		jLabelHandlungenOffen.setForeground(Color.green);
 		jLabelHandlungenOffen.setText("Zwei Einfache oder eine Komplexe");
 		initPanel.add(jLabelHandlungenOffen);
 		
-		jLabelEinfacheAktion.setBounds(jLabelDranIst.getX() + jLabelText.getWidth()+10, unterbrechungAnwenden[0].getY() + unterbrechungAnwenden[0].getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
+		
+		// -------------------------------------------------------------------------->
+		y = jLabelText.getY();
+		// y = unterbrechungAnwenden[0].getY() + unterbrechungAnwenden[0].getHeight() + gapSpaceV;
+		jLabelEinfacheAktion.setBounds(jLabelDranIst.getX() + jLabelText.getWidth()+10, y, 3*arrayWidth, compHeight);
 		jLabelEinfacheAktion.setText("Einfache Handlungen:");
 		initPanel.add(jLabelEinfacheAktion);
 		
@@ -307,7 +327,8 @@ public class InitiativePanel extends JPanel {
 		jComboBoxEinfacheAktionen.setBounds(jLabelEinfacheAktion.getX(), jLabelEinfacheAktion.getY() + jLabelEinfacheAktion.getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
 	    initPanel.add(jComboBoxEinfacheAktionen);
 	    
-	    jLabelKomplexeAktion.setBounds(jLabelEinfacheAktion.getX() + 3*arrayWidth+10, unterbrechungAnwenden[0].getY() + unterbrechungAnwenden[0].getHeight() + gapSpaceV, 3*arrayWidth, compHeight);
+	    y = jLabelText.getY();
+	    jLabelKomplexeAktion.setBounds(jLabelEinfacheAktion.getX() + 3*arrayWidth+10, y , 3*arrayWidth, compHeight);
 		jLabelKomplexeAktion.setText("Komplexe Handlungen:");
 		initPanel.add(jLabelKomplexeAktion);
 		
@@ -337,7 +358,7 @@ public class InitiativePanel extends JPanel {
 	    
 	    // ganz unten
 	    initiativeNeustart.setBounds(jComboBoxKomplexeAktionen.getX() + 3*arrayWidth+10, jComboBoxKomplexeAktionen.getY(), 3*arrayWidth, compHeight);
-	    initiativeNeustart.setText("Nächster Initiativedurchgang");
+	    initiativeNeustart.setText("Nächste Kampfrunde");
 	    initiativeNeustart.setMargin(new Insets(2, 2, 2, 2));
 	    initiativeNeustart.addActionListener(new ActionListener() { 
     		public void actionPerformed(ActionEvent evt) { 
@@ -349,7 +370,7 @@ public class InitiativePanel extends JPanel {
 	    
 	    
 	    neuerKampf.setBounds(initiativeNeustart.getX(), jLabelKomplexeAktion.getY(), 3*arrayWidth, compHeight);
-	    neuerKampf.setText("Neue Kampfrunde");
+	    neuerKampf.setText("Neuer Kampf");
 	    neuerKampf.setMargin(new Insets(2, 2, 2, 2));
 	    neuerKampf.addActionListener(new ActionListener() { 
     		public void actionPerformed(ActionEvent evt) { 
@@ -381,18 +402,13 @@ public class InitiativePanel extends JPanel {
 		String chara = (String) ComboBoxCharas.getSelectedItem();
 		if (!teilnehmercontains(chara)) {
 			teilnehmer[aktTeilnehmer].setText(chara);
+			teilnehmer[aktTeilnehmer].setVisible(true);;
 			iniArt[aktTeilnehmer].setSelectedItem("Normal");
-			initPanel.add(iniArt[aktTeilnehmer]);
 			iniWert[aktTeilnehmer].setText("" + IAmTheFrame.searchCharaByName(chara).getINI());
-			initPanel.add(iniWert[aktTeilnehmer]);
-			initPanel.add(wuerfeln[aktTeilnehmer]);
 			wuerfeln[aktTeilnehmer].setEnabled(true);
-			initPanel.add(freieHandlung[aktTeilnehmer]);
-			initPanel.add(freieAnwenden[aktTeilnehmer]);
-			freieAnwenden[aktTeilnehmer].setEnabled(false);
-			initPanel.add(unterbrechungsHandlung[aktTeilnehmer]);
-			initPanel.add(unterbrechungAnwenden[aktTeilnehmer]);
 			unterbrechungAnwenden[aktTeilnehmer].setEnabled(false);
+			
+			gridPanel.add(sPanels[aktTeilnehmer]);
 			
 			teilnehmer[aktTeilnehmer].setVisible(true);
 			iniArt[aktTeilnehmer].setVisible(true);
@@ -523,7 +539,7 @@ public class InitiativePanel extends JPanel {
 		}	
 	 } // end of jButton2_ActionPerformed
 	
-	// Wird ausgeführt, wenn Button "Nächster Initiativedurchgang" gedrückt wird
+	// Wird ausgeführt, wenn Button "Nächste Kampfrunde" gedrückt wird
 	public static void initiativeNeustart_ActionPerformed(ActionEvent evt) {
 		for (int i = 0; i < aktTeilnehmer; ++i){
 			wuerfeln[i].setEnabled(true);
@@ -543,7 +559,7 @@ public class InitiativePanel extends JPanel {
 		//jLabelDranIst.setText("");
 		jComboBoxDranIst.removeAllItems();
 		jLabelBereitsVorhanden.setText("");
-		writeProto("Neuer Initiativedurchgang startet");
+		writeProto("Nächste Kampfrunde startet.");
 		clearRunde();
 		initiativeNeustart.setEnabled(false);
 	 }
@@ -568,13 +584,14 @@ public class InitiativePanel extends JPanel {
 			}
 			DefaultTableModel model = (DefaultTableModel) jTableReihenfolge.getModel();
 			model.setRowCount(0);
+			gridPanel.removeAll();
+			clearRunde();
 		}
 		initPanel.repaint();
 	} // end of jButton2_ActionPerformed
 	
 	// Setzt die Werte im Runden-Array zurück
 	private static void clearRunde() {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < runde.length; ++i){
 			runde[i] = 0;
 		}
@@ -657,6 +674,25 @@ public class InitiativePanel extends JPanel {
 		       	if (val2 == 0) return -1;
 		       	if (runde[p1] != runde[p2]){ // Wer eine niedrigere Runde hat ist zuerst dran
 		       		return runde[p1] - runde[p2];
+		       	} else if (runde[p1] == runde[p2] && val1 == val2) { // ERIM!
+		       		//String charaname1 = teilnehmer[p1].getText();
+		       		Chara c1 = IAmTheFrame.searchCharaByName(teilnehmer[p1].getText());
+		       		//String charaname2 = teilnehmer[p2].getText();
+		       		Chara c2 = IAmTheFrame.searchCharaByName(teilnehmer[p2].getText());
+		       		if (c1.getEDG() != c2.getEDG()) {
+		       			return c2.getEDG() - c1.getEDG();
+		       		} else if (c1.getREA() != c2.getREA()) {
+		       			return c2.getREA() - c1.getREA();
+		       		} else if (c1.getINT() != c2.getINT()){
+						return c2.getINT() - c1.getINT();
+					} else {
+						Random r = new Random();
+						if (r.nextInt(2) == 0) {
+							return -1;
+						} else {
+							return 1;
+						}
+					}
 		       	} else return val2 - val1; // Sonst: Wer einen niedrigeren Wert hat
 		      }
 		});	
@@ -730,14 +766,7 @@ public class InitiativePanel extends JPanel {
 			jLabelBereitsVorhanden.setText("Der Charakter kann dies nicht mehr tun.");
 			jLabelDranIst.setText("");
 			jLabelHandlungenOffen.setForeground(Color.red);
-			jLabelHandlungenOffen.setText("Initiativedurchgang abgeschlossen");
-			// frieAnwenden zurücksetzbar machen
-			
-			
-				// ---------------------------------------------------------------------------->
-			
-			
-			// 
+			jLabelHandlungenOffen.setText("Kampfrunde abgeschlossen");
 		}
 		// Chara in nächste Runde bringen!
 		if (handelnderIni == 0){ 
@@ -762,12 +791,12 @@ public class InitiativePanel extends JPanel {
 		if (!nochhandelbar){
 			jLabelDranIst.setText("");
 			jLabelHandlungenOffen.setForeground(Color.red);
-			jLabelHandlungenOffen.setText("Initiativedurchgang abgeschlossen");
+			jLabelHandlungenOffen.setText("Kampfrunde abgeschlossen");
 			initiativeNeustart.setEnabled(true); // Neustart zulassen
 		}
 	}
 	
-	// Checks, if next round will start
+	// Überprüft, ob alle noch handlungsfähigen Charaktere in der gleichen Runde sind.
 	private static boolean checkForNextRound() {
 		int rundeletzterchar = 0;
 		boolean first = false; 
@@ -784,12 +813,14 @@ public class InitiativePanel extends JPanel {
 			first = true;
 		}
 		if (ret){
-			for (int j = 0; j < maxAnz; ++j){
-				unterbrechungAnwenden[j].setEnabled(true);
+			JOptionPane.showMessageDialog(initPanel, "Neuer Initiativedurchgang beginnt.", "Neuer Initiativedurchgang", JOptionPane.INFORMATION_MESSAGE);
+			for (int i = 0; i < aktTeilnehmer; ++i) {
+				freieAnwenden[i].setEnabled(true);
 			}
 		}
 		return ret;
 	}
+
 
 	// decreases Ini by 10, but not < 0
 	private static void decreaseIni(int handelnderChara, int value) {

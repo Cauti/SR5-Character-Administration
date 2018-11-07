@@ -16,6 +16,9 @@ import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.util.Timer;
+import sr5.classes.*;
+import sr5.helppanels.FertPanel;
+import sr5.helppanels.HostFrame;
 
 /**
  * 
@@ -45,6 +48,7 @@ public class IAmTheFrame extends JFrame {
 	private Timer time;
 	private AutoSaver as;
 	private BufferedImage image;
+	private JMenu jMenu2;
 	// Ende Attribute
 
 	/**
@@ -53,22 +57,15 @@ public class IAmTheFrame extends JFrame {
 	public IAmTheFrame(String title) {
 		// Frame-Initialisierung
 		connectFrame = new JFrame();
-		connectFrame.setTitle("CaSCaDE V. 1.0");
+		connectFrame.setTitle(title);
 		//String iconpath = System.getProperty("user.dir") + "\\res\\logo2.png";
 		
 		try {
-			//image = ImageIO.read(ResourceLoader.load("\\logo2.png"));
-			//image = ImageIO.read(getClass().getResource("logo2.png"));
 			image = ImageIO.read(getClass().getResourceAsStream("logo2.png"));
 			connectFrame.setIconImage(image);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
-		//ImageIcon img = new ImageIcon(iconpath);
-		//connectFrame.setIconImage(img.getImage());
-		
 
 		WindowListener exitListener = new WindowAdapter() {
 			@Override
@@ -115,6 +112,7 @@ public class IAmTheFrame extends JFrame {
 		valuePanel = new JPanel();
 		battlePanel = new JPanel();
 		initiativePanel = new JPanel();
+		JPanel matrixPanel = new JPanel();
 		valuePanel.setLayout(null);
 		battlePanel.setLayout(null);
 		initiativePanel.setLayout(null);
@@ -123,6 +121,7 @@ public class IAmTheFrame extends JFrame {
 		tabbedPane.addTab("Initiative", null, initiativePanel,
 				"Initiative Administration");
 		tabbedPane.addTab("Combat", null, battlePanel, "Combat Emulation");
+		tabbedPane.addTab("Matrix", null, matrixPanel, "Matrix Emulation");
 		connectFrame.add(tabbedPane);
 
 		// setUpValuePanel();
@@ -131,6 +130,7 @@ public class IAmTheFrame extends JFrame {
 		CombatPanel.setUpCombatPanel(battlePanel);
 		ValuePanel.setUpValuePanel(valuePanel);
 		InitiativePanel.setupInitiativePanel(initiativePanel);
+		MatrixPanel.buildGUI(matrixPanel);
 		connectFrame.setVisible(true);
 		//changeFont(connectFrame, new Font("Neuropol X Free",Font.PLAIN,14));
 	} // end of public IAmTheFrame
@@ -143,6 +143,9 @@ public class IAmTheFrame extends JFrame {
 
 		jMenu1 = new JMenu("File");
 		jMenu1.setMnemonic(KeyEvent.VK_F);
+		
+		jMenu2 = new JMenu("Help");
+		jMenu2.setMnemonic(KeyEvent.VK_H);
 
 		JMenuItem eMenuItem = new JMenuItem("Exit");
 		eMenuItem.setMnemonic(KeyEvent.VK_E);
@@ -197,6 +200,9 @@ public class IAmTheFrame extends JFrame {
 						((DefaultListModel<String>) allcharas.getModel()).addElement(charname);
 						InitiativePanel.addComboBoxCharas(charname);
 						CombatPanel.addComboBoxes(charname);
+						if (chara.getKlasse().equals(Klasse.DECKER) || chara.getKlasse().equals(Klasse.RIGGER) || chara.getKlasse().equals(Klasse.TECHNOMANCER)) {
+							MatrixPanel.addComboBoxes(charname);
+						}
 					}
 
 					//
@@ -208,9 +214,30 @@ public class IAmTheFrame extends JFrame {
 			}
 		});
 
+		JMenuItem eMenuItem3 = new JMenuItem("Create Host");
+		eMenuItem3.setMnemonic(KeyEvent.VK_H);
+		eMenuItem3.setToolTipText("Creats a Host");
+		eMenuItem3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				HostFrame hf = new HostFrame();
+			}
+		});
+		
+		JMenuItem eMenuItemFert = new JMenuItem("Fertigkeiten");
+		eMenuItemFert.setMnemonic(KeyEvent.VK_F);
+		eMenuItemFert.setToolTipText("Fertigkeiten anzeigen");
+		eMenuItemFert.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				new FertPanel();
+			}
+		});
+		
 		jMenu1.add(eMenuItem2);
+		jMenu1.add(eMenuItem3);
 		jMenu1.add(eMenuItem);
+		jMenu2.add(eMenuItemFert);
 		jMenuBar1.add(jMenu1);
+		jMenuBar1.add(jMenu2);
 		connectFrame.setJMenuBar(jMenuBar1);
 	}
 
@@ -221,10 +248,6 @@ public class IAmTheFrame extends JFrame {
 	public static JList<String> getAllCharas() {
 		return allcharas;
 	}
-
-//	public static ArrayList<Chara> getCharaObjects() {
-//		return charaobjects;
-//	}
 
 	public static ArrayList<Chara> getCharas() {
 		return charas;
@@ -262,6 +285,13 @@ public class IAmTheFrame extends JFrame {
 	}
 
 	public static void main(String[] args) {
-		new IAmTheFrame("CASCADE V. 1.0 Beta");
+		try {
+            // Set cross-platform Java L&F (also called "Metal")
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
+		} 
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		new IAmTheFrame("CASCADE V. 1.2 Beta");
 	} // end of main
 } // end of class IAmTheFrame
